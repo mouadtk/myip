@@ -35,6 +35,7 @@ public class indexController {
 	@Autowired
 	UserService userService;
 	
+	
 	@Autowired
 	private Environment environment;
 	
@@ -51,18 +52,18 @@ public class indexController {
 				@RequestParam("file") MultipartFile file){
 			/**
 			 * check if source is an excel file
-			 **
+			 **/
 			String ext = FilenameUtils.getExtension(file.getOriginalFilename());
 			System.out.println(ext);
 			
 			Map<String , Server> MyServers =  new HashMap<String, Server>();
 			/***
 			 * Upload source file.
-			 **
+			 **/
 			String srcFile = this.UploadFile(name, file);
 			/**
 			 * Upload Servers
-			 **
+			 **/
 			try{
 				MyServers = serverService.LoadServers(srcFile, MyServers);
 			}catch(Exception e){
@@ -77,9 +78,13 @@ public class indexController {
 			/**
 			 * get Owner of each Server
 			 **/
+			for (Map.Entry<String, Server> serv : MyServers.entrySet()) {
+				String resMYIPMS = serverService.getOwner(serv.getValue().getIp(), _users.get(0));
+				
+			}
 			
 			return "owner : " + serverService.getOwner("66.147.230.66", _users.get(0));
-			//return MyServers.size()+"   -   "+file.getContentType();
+			
 	}
 	
 	/***

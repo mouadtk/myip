@@ -117,30 +117,21 @@ public class ServerServiceImpl implements ServerService {
 		return MyServers;
 	}
 
-
-	
+	/***
+	 * 
+	 **/
 	@Override
 	public String getOwner(String ip, UserMYIPMS user) {
-		String Results = null;
-		Date dNow = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd_hh:mm:ss");
-        TimeZone tzInAmerica = TimeZone.getTimeZone("America/New_York");
-        ft.setTimeZone(tzInAmerica);
-        String timestamp = ft.format(dNow);
-        
-        //timestamp = "2015-10-16_20:07:12";
-		String _link = "http://api.myip.ms/"+ip+"/api_id/"+user.getAPI_id()+"/api_key/"+user.getAPI_Key();
-		System.out.println("sign input: " +_link+"/timestamp/"+timestamp);
-		String signature =  getSignature(_link+"/timestamp/"+timestamp);
-		System.out.println("time: "+timestamp);
-		//signature = getSignature("http://api.myip.ms/66.147.230.66/api_id/id20763/api_key/1159677427-2147275262-626413380/timestamp/"+timestamp);
-		System.out.println("signature: "+signature);
 		
-		String QUERY_URL = user.getAPI_URL()+"/"+ip+"/api_id/"+user.getAPI_id()+"/api_key/"+user.getAPI_Key()+"/signature/"+signature+"/timestamp/"+timestamp+"";
-		System.out.println("url: "+QUERY_URL);
+		String Results 		= null;
+		Date dNow 			= new Date();
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd_hh:mm:ss");
+        String timestamp 	= ft.format(dNow);
+        String _link 	 	= "http://api.myip.ms/"+ip+"/api_id/"+user.getAPI_id()+"/api_key/"+user.getAPI_Key();
+		String signature 	= getSignature(_link+"/timestamp/"+timestamp);
+		String QUERY_URL 	= user.getAPI_URL()+"/"+ip+"/api_id/"+user.getAPI_id()+"/api_key/"+user.getAPI_Key()+"/signature/"+signature+"/timestamp/"+timestamp+"";
 		try{
 			Results =  readUrl(QUERY_URL);
-			System.out.println(Results);
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
@@ -171,8 +162,12 @@ public class ServerServiceImpl implements ServerService {
 		}
 		return null;
 	}
-
 	
+	/***
+	 * @param urlString : url source 
+	 * @return url content
+	 * @throws Exception
+	 */
 	private String readUrl(String urlString) throws Exception {
 	    BufferedReader reader = null;
 	    try {
@@ -191,12 +186,14 @@ public class ServerServiceImpl implements ServerService {
 	    }
 	}
 
-
-
 	@Override
 	public int SetOwnerPerServer(List<UserMYIPMS> users, List<Server> servers) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		int i = 0, userIndex = 0;
+		for(Server srv : servers){
+			String owner = getOwner(srv.getIp(), users.get(0));
+		}
+		return i;
 	}
 
 }

@@ -34,7 +34,7 @@ public class IPAdress implements Serializable{
 	private String State;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="SERVER_ID", nullable=true)
+	@JoinColumn(name = "SERVER_ID", nullable = true)
 	private Server Parent;
 	
 	/****/

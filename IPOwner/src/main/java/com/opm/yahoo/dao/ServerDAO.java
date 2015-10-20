@@ -10,7 +10,6 @@ import com.opm.yahoo.models.Server;
 public interface ServerDAO {
 	
 	public SessionFactory getSessionFactory();
-	
 	public Integer AddServer(Server MyServer);
 	public boolean UpdateServer(Server O);
 	public List<Server> getAllServers();

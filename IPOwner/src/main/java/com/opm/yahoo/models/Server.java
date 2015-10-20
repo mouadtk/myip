@@ -37,6 +37,10 @@ public class Server implements Serializable{
 	@OneToMany( mappedBy = "Parent")
 	Set<IPAdress> Childs = new HashSet<IPAdress>(0);
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="OWNER_ID", nullable=true)
+	private Owner Owner;
+	
 	public Server(String... args){
 		
 		name 	=  args[0];
@@ -85,6 +89,14 @@ public class Server implements Serializable{
 	
 	public void setChilds(Set<IPAdress> childs) {
 		Childs = childs;
+	}
+
+	public Owner getOwner() {
+		return Owner;
+	}
+
+	public void setOwner(Owner owner) {
+		Owner = owner;
 	}
 
 }
