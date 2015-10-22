@@ -133,5 +133,19 @@ public class ServerDAOImpl implements ServerDAO {
 		}
 	}
 
+	@Override
+	public Server getServerByNameNoOwner(String Name) {
+		try{
+			Session session = HibernateSessFactory.getCurrentSession();
+			Criteria crit = session.createCriteria(Server.class);
+			crit.add(Restrictions.like("name", Name));
+			crit.add(Restrictions.isNull("Owner"));
+			return  (crit.uniqueResult()!=null) ? (Server) crit.uniqueResult() : null;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	
 }

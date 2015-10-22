@@ -41,46 +41,37 @@ public class UserMYIPMS implements Serializable {
 		return username;
 	}
 
-
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
 
 	public String getPassword() {
 		return password;
 	}
 
-
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
 
 	public String getAPI_id() {
 		return API_id;
 	}
 
-
 	public void setAPI_id(String aPI_id) {
 		API_id = aPI_id;
 	}
-
 
 	public String getAPI_Key() {
 		return API_Key;
 	}
 
-
 	public void setAPI_Key(String aPI_Key) {
 		API_Key = aPI_Key;
 	}
 
-
 	public String getAPI_URL() {
 		return API_URL;
 	}
-
 
 	public void setAPI_URL(String aPI_URL) {
 		API_URL = aPI_URL;

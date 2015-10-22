@@ -16,6 +16,7 @@ public interface ServerDAO {
 	public List<Server> getAllServersFull(); // with IPSList
 	
 	public Server getServerByName(String Name);
+	public Server getServerByNameNoOwner(String Name);
 	public Server getServerByIP(String ip);
 	
 	public Set<IPAdress> getServersIPs(String ServerName);

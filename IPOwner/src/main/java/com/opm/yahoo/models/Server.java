@@ -46,6 +46,7 @@ public class Server implements Serializable{
 		name 	=  args[0];
 		ip		=  args[1];
 		domain	=  args[2];
+		Owner	= null;
 	}
 	
 	public Server(){} 

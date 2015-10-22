@@ -14,8 +14,7 @@ import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(name="owner", uniqueConstraints = {
-		@UniqueConstraint(columnNames = "Name"),
-		@UniqueConstraint(columnNames = "webSite")})
+		@UniqueConstraint(columnNames = "Name")})
 public class Owner implements Serializable{
 
 	/**
@@ -28,6 +27,7 @@ public class Owner implements Serializable{
 	private int Id;
 	private String Name;
 	private String webSite;
+	@Column(columnDefinition  = "TEXT")
 	private String OwnerDetails;
 	
 	@OneToMany( mappedBy = "Owner")
