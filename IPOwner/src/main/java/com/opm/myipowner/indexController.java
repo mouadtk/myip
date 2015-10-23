@@ -1,8 +1,10 @@
-package com.opm.yahoo;
+package com.opm.myipowner;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,12 +22,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.opm.yahoo.buisness.ServerService;
-import com.opm.yahoo.buisness.ServiceMYIPMS;
-import com.opm.yahoo.dao.ServerDAO;
-import com.opm.yahoo.models.Owner;
-import com.opm.yahoo.models.Server;
-import com.opm.yahoo.models.UserMYIPMS;
+import com.opm.myipowner.dao.ServerDAO;
+import com.opm.myipowner.models.Owner;
+import com.opm.myipowner.models.Server;
+import com.opm.myipowner.models.UserMYIPMS;
+import com.opm.myipowner.service.ServerService;
+import com.opm.myipowner.service.ServiceMYIPMS;
 
 @Controller
 @RequestMapping(value = {"", "/index", ""})
@@ -33,8 +35,7 @@ import com.opm.yahoo.models.UserMYIPMS;
 public class indexController {
 
 	@Autowired
-	ServerService serverService; 
-	
+	ServerService serverService; 	
 	@Autowired
 	ServiceMYIPMS ServiceMYIPMS;
 	@Autowired
@@ -47,17 +48,13 @@ public class indexController {
 	public ModelAndView index() {
 		
 		List<Owner> _Owners = ServiceMYIPMS.getAllOWners();
-		for(Owner O: _Owners)
-			System.out.println(O.getServers().size());
 		ModelAndView mv = new ModelAndView("index");
 		mv.addObject("_owners", _Owners);
 		return mv;
 	}
 	
 	@RequestMapping(value = "/formProcess", method = RequestMethod.POST)
-	public @ResponseBody String handleFileUpload(
-				@RequestParam("name") String name,
-				@RequestParam("file") MultipartFile file){
+	public @ResponseBody String handleFileUpload(@RequestParam("file") MultipartFile file){
 			/**
 			 * check if source is an excel file
 			 * & check format
@@ -67,6 +64,9 @@ public class indexController {
 			/***
 			 * Upload source file.
 			 **/
+			Date dNow 			= new Date();
+	        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd_HH-mm-ss");
+	        String name 	= ft.format(dNow);
 			String srcFile = this.UploadFile(name, file);
 			if(srcFile.contains("You failed"))
 				return "Failed to upload Servers File";
@@ -78,14 +78,15 @@ public class indexController {
 				if(MyServers == null){
 					return "kahwya lista";
 				}
-				
 			}catch(Exception e){
 				System.out.println(e.getMessage());
 			}
 			/***
 			 * Get Users (myip.ms userAccounts)
 			 **/
-			List<UserMYIPMS> _users = ServiceMYIPMS.getAllUsers();
+			List<UserMYIPMS> _users = ServiceMYIPMS.getAllActiveUsers();
+			System.out.println(_users.size());
+			(new Scanner(System.in)).nextLine();
 			if(_users.isEmpty())
 				return "no user exist!";
 			/**

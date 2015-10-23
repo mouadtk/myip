@@ -1,10 +1,10 @@
-package com.opm.yahoo.dao;
+package com.opm.myipowner.dao;
 
 import java.util.List;
 
 import org.hibernate.SessionFactory;
 
-import com.opm.yahoo.models.Owner;
+import com.opm.myipowner.models.Owner;
 
 public interface OwnerDAO {
 

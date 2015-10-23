@@ -1,4 +1,4 @@
-package com.opm.yahoo.models;
+package com.opm.myipowner.models;
 
 import java.io.Serializable;
 
@@ -24,6 +24,7 @@ public class UserMYIPMS implements Serializable {
 	String API_id;
 	String API_Key;
 	String API_URL = "http://api.myip.ms";
+	String status;
 	
 	public UserMYIPMS() {
 			
@@ -75,6 +76,14 @@ public class UserMYIPMS implements Serializable {
 
 	public void setAPI_URL(String aPI_URL) {
 		API_URL = aPI_URL;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

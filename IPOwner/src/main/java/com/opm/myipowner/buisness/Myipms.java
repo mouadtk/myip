@@ -1,27 +1,46 @@
-package com.opm.yahoo.buisness;
+package com.opm.myipowner.buisness;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Service;
 
+import com.opm.myipowner.models.Owner;
+import com.opm.myipowner.models.UserMYIPMS;
 import com.opm.utils.DriverSetting;
 import com.opm.utils.ImageTools;
 import com.opm.utils.Proxies;
 
 @Service
-public class MyipsOwnerProcess extends  Thread{
+public class Myipms extends  Thread{
 	
 	WebDriver driver;
 	static String CaptchaPath		= System.getProperty("user.dir") + "/Resources";
-	public MyipsOwnerProcess() {}
+	private List<Owner> owners = null;
+	private UserMYIPMS user;
 	
-	public void doStuff() throws InterruptedException{
-		
+	public List<Owner> getOwners() {
+		return owners;
 	}
+
+	public void setOwners(List<Owner> owners) {
+		this.owners = owners;
+	}
+
+	public UserMYIPMS getUser() {
+		return user;
+	}
+
+	public void setUser(UserMYIPMS user) {
+		this.user = user;
+	}
+
+	public Myipms() {}
 	
 	public boolean login(String email, String passwd){
 		
@@ -33,12 +52,10 @@ public class MyipsOwnerProcess extends  Thread{
 			mailInput.clear();
 			passwdInput.clear();
 			mailInput.sendKeys(email);
-			passwdInput.sendKeys(passwd);
-			
-			
+			passwdInput.sendKeys(passwd);			
 			try{
 				if(driver.findElements(By.cssSelector("img[id^=code_image]")).size() > 0){
-				/*** Begin Captcha ***/	
+				/*** Begin Captcha ***/
 				Thread.sleep(3000);
 				ImageTools.getImageSupprot(driver,By.cssSelector("img[id^=code_image]") ,CaptchaPath+"/","captcha");
 				String captchResult = ImageTools.getCaptcha(CaptchaPath+"/captcha.png");
@@ -72,17 +89,16 @@ public class MyipsOwnerProcess extends  Thread{
 			/**
 			 * launch driver
 			 ***/
-			driver = DriverSetting.withProxy();
-			String email[]  = {"tribak.m@gmail.com","godley_05alberto97165@yahoo.com"};
-			String pass[] 	= {"rootfcb@1988","rootfcb@1988"};
-			
-			login(email[1], pass[1]);
+			driver = DriverSetting.withProxy();		
+			login(user.getUsername(), user.getPassword());
 			Thread.sleep(15000);
-			
-			List<String> Res = getOwnerRangeIPs("Hostrocket Web Services");
-			for(String td : Res)
-				System.out.println(td);
-			
+			for(Owner Ow :  this.owners){
+				int i =0;
+				Map<Integer, String> ranges =  new HashMap<Integer, String>();
+				List<String> Res = getOwnerRangeIPs(Ow.getName());				
+				for(String rg : Res){ ranges. put(i, rg); i++;}
+				Ow.setRange(ranges);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			if(driver!=null)
@@ -117,7 +133,7 @@ public class MyipsOwnerProcess extends  Thread{
 	}
 
 	public static void main(String argv[] ){
-		new MyipsOwnerProcess().run();
+		new Myipms().run();
 	}
 	
 }

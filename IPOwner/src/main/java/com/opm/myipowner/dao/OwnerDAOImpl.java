@@ -1,4 +1,4 @@
-package com.opm.yahoo.dao;
+package com.opm.myipowner.dao;
 
 import java.util.List;
 
@@ -12,14 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.opm.yahoo.models.Server;
-import com.opm.yahoo.models.UserMYIPMS;
+import com.opm.myipowner.models.IPAdress;
+import com.opm.myipowner.models.Owner;
+import com.opm.myipowner.models.Server;
 
 @Repository
 @Transactional
-public class UserMYIPMSDAOImpl implements UsermyipmsDAO{
+public class OwnerDAOImpl implements OwnerDAO {
 
-static Logger LOGGER = LoggerFactory.getLogger(ServerDAOImpl.class);
+	
+	static Logger LOGGER = LoggerFactory.getLogger(OwnerDAOImpl.class);
 	
 	@Autowired
 	private SessionFactory HibernateSessFactory;
@@ -28,30 +30,31 @@ static Logger LOGGER = LoggerFactory.getLogger(ServerDAOImpl.class);
         this.HibernateSessFactory = sf;
     } 
 	
+	@Override
 	public SessionFactory getSessionFactory(){
 		return HibernateSessFactory;
 	}
 	
-
 	@Override
-	public Integer AddUserMYIPMS(UserMYIPMS MyUser) {
-
+	public Integer AddOwner(Owner MyOWner) {
+		 
 		try {
 			Session session = HibernateSessFactory.getCurrentSession();		
-			Integer ServerID = (Integer)session.save(MyUser);
-			MyUser.setId(ServerID);
-			return ServerID;
-		} catch(Exception e) {
+			Integer ID = (Integer)session.save(MyOWner);
+			//MyOWner.setId(ID);
+			return ID;
+		}catch(Exception e){
 			System.err.println(" *************************"+e.getMessage()+"**************");
-		} 				
+		}
 		return -1;
+	
 	}
 
 	@Override
-	public boolean UpdateUserMYIPMS(UserMYIPMS u) {
+	public boolean UpdateOwner(Owner O) {
 		try{
 			Session session = HibernateSessFactory.getCurrentSession();			
-			session.update(u);	
+			session.update(O);	
 			return true;
 		}catch(Exception e){
 			e.printStackTrace();
@@ -60,32 +63,34 @@ static Logger LOGGER = LoggerFactory.getLogger(ServerDAOImpl.class);
 	}
 
 	@Override
-	public List<UserMYIPMS> getAllUserMYIPMS() {
+	public List<Owner> getAllOwners() {
+		 
 		try{
 			@SuppressWarnings("unchecked")
-			List<UserMYIPMS> listUsers = (List<UserMYIPMS>) HibernateSessFactory.getCurrentSession()
-					.createCriteria(UserMYIPMS.class)
+			List<Owner> list= (List<Owner>) HibernateSessFactory.getCurrentSession()
+					.createCriteria(Owner.class)
 					.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();	
-			return listUsers;
+			return list;
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
 	}
 
+	
 	@Override
-	public UserMYIPMS getUserMYIPMSByUserName(String Name) {
-
+	public Owner getOwnerByName(String Name) {
+		
 		try{
 			Session session = HibernateSessFactory.getCurrentSession();
-			Criteria crit = session.createCriteria(UserMYIPMS.class);
-			crit.add(Restrictions.like("username", Name));
-			return  (crit.uniqueResult()!=null) ? (UserMYIPMS) crit.uniqueResult() : null;
+			Criteria crit = session.createCriteria(Owner.class);
+			crit.add(Restrictions.like("Name", Name));
+			return  crit.uniqueResult()!=null ? (Owner) crit.uniqueResult() : null;
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-	
 	}
+
 
 }

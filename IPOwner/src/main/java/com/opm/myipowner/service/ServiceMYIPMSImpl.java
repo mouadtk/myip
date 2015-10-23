@@ -1,4 +1,4 @@
-package com.opm.yahoo.buisness;
+package com.opm.myipowner.service;
 
 import java.util.Iterator;
 import java.util.List;
@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import com.opm.yahoo.dao.OwnerDAO;
-import com.opm.yahoo.dao.UsermyipmsDAO;
-import com.opm.yahoo.models.Owner;
-import com.opm.yahoo.models.UserMYIPMS;
+import com.opm.myipowner.dao.OwnerDAO;
+import com.opm.myipowner.dao.UsermyipmsDAO;
+import com.opm.myipowner.models.Owner;
+import com.opm.myipowner.models.UserMYIPMS;
 
 @Service("ServiceMYIPMS")
 @Transactional
@@ -44,9 +44,12 @@ public class ServiceMYIPMSImpl implements ServiceMYIPMS{
         	 * Extracting json data from 'params'
         	 */
             Object obj = parser.parse(params[0]);
-            
             JSONObject jsonObject = (JSONObject) obj;
             JSONObject owners = (JSONObject) jsonObject.get("owners");
+//            if(	!((String)  owners.get("status")).equals("ok")){
+//            	System.out.println(owners.toString());
+//            	return null;
+//            }
             JSONObject owner = (JSONObject) owners.get("owner");
             
             System.out.println("Owner Object to String  :"+   owner.toString());
@@ -85,4 +88,12 @@ public class ServiceMYIPMSImpl implements ServiceMYIPMS{
 		return owners;
 		
 	}
+
+	@Override
+	public List<UserMYIPMS> getAllActiveUsers() {
+
+		return _user.getAllActiveUserMYIPMS();
+	}
+
+	
 }

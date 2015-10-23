@@ -1,4 +1,4 @@
-package com.opm.yahoo.dao;
+package com.opm.myipowner.dao;
 
 import java.util.List;
 import java.util.Set;
@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.opm.yahoo.models.IPAdress;
-import com.opm.yahoo.models.Server;
+import com.opm.myipowner.models.IPAdress;
+import com.opm.myipowner.models.Server;
 
 @Repository
 @Transactional

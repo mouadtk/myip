@@ -1,11 +1,12 @@
-package com.opm.yahoo.dao;
+package com.opm.myipowner.dao;
 
 import java.util.List;
 import java.util.Set;
 
 import org.hibernate.SessionFactory;
-import com.opm.yahoo.models.IPAdress;
-import com.opm.yahoo.models.Server;
+
+import com.opm.myipowner.models.IPAdress;
+import com.opm.myipowner.models.Server;
 
 public interface ServerDAO {
 	

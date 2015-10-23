@@ -1,12 +1,12 @@
-package com.opm.yahoo.buisness;
+package com.opm.myipowner.service;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import com.opm.yahoo.models.Owner;
-import com.opm.yahoo.models.Server;
-import com.opm.yahoo.models.UserMYIPMS;
+import com.opm.myipowner.models.Owner;
+import com.opm.myipowner.models.Server;
+import com.opm.myipowner.models.UserMYIPMS;
 
 public interface ServerService {
 	

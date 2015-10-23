@@ -1,4 +1,4 @@
-package com.opm.yahoo.models;
+package com.opm.myipowner.models;
 
 import java.io.Serializable;
 import java.util.HashSet;

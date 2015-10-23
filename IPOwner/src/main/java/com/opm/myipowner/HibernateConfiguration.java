@@ -1,4 +1,4 @@
-package com.opm.yahoo;
+package com.opm.myipowner;
 
 import java.util.Properties;
 
@@ -18,7 +18,7 @@ import org.springframework.core.env.Environment;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan({ "com.opm.yahoo" })
+@ComponentScan({ "com.opm.myipowner" })
 @PropertySource(value = { "classpath:application.properties" })
 public class HibernateConfiguration {
  
@@ -29,7 +29,7 @@ public class HibernateConfiguration {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan(new String[] { "com.opm.yahoo.models" });
+        sessionFactory.setPackagesToScan(new String[] { "com.opm.myipowner.models" });
         sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
      }

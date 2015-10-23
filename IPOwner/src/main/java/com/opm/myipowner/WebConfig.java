@@ -1,4 +1,4 @@
-package com.opm.yahoo;
+package com.opm.myipowner;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "com.opm.yahoo")
+@ComponentScan(basePackages = "com.opm.myipowner")
 @PropertySource("classpath:application.properties")
 public class WebConfig extends WebMvcConfigurerAdapter	 {
 	

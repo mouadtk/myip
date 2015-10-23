@@ -1,4 +1,4 @@
-package com.opm.yahoo.buisness;
+package com.opm.myipowner.service;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.transaction.Transactional;
 
@@ -23,12 +24,13 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.opm.yahoo.dao.IPadressDAO;
-import com.opm.yahoo.dao.ServerDAO;
-import com.opm.yahoo.models.IPAdress;
-import com.opm.yahoo.models.Owner;
-import com.opm.yahoo.models.Server;
-import com.opm.yahoo.models.UserMYIPMS;
+import com.opm.myipowner.buisness.Myipms;
+import com.opm.myipowner.dao.IPadressDAO;
+import com.opm.myipowner.dao.ServerDAO;
+import com.opm.myipowner.models.IPAdress;
+import com.opm.myipowner.models.Owner;
+import com.opm.myipowner.models.Server;
+import com.opm.myipowner.models.UserMYIPMS;
 
 
 @Service("ServerService")
@@ -42,7 +44,7 @@ public class ServerServiceImpl implements ServerService {
 	@Autowired
 	ServiceMYIPMS _MYIPMS;
 	@Autowired
-	MyipsOwnerProcess OwnerProcess;
+	Myipms OwnerProcess;
 	@Override
 	public Map<String, Server> LoadServers(String SrcFilePath, Map<String, Server> MyServers) throws IOException{
 		
@@ -169,10 +171,10 @@ public class ServerServiceImpl implements ServerService {
 	}
 	
 	/***
-	 * @param urlString : url source 
-	 * @return url content
-	 * @throws Exception
-	 */
+	 * @param 	urlString : url source
+	 * @return  url content
+	 * @throws  Exception
+	 ***/
 	private String readUrl(String urlString) throws Exception {
 	    BufferedReader reader = null;
 	    try {
@@ -215,6 +217,7 @@ public class ServerServiceImpl implements ServerService {
 			System.out.println("**"+row.getCell(8));
 			//if(!row.getCell(8).equals("Date In")) return null;
 			while (rowIterator.hasNext()) {
+				
 				/**
 				 * Read an excel row 
 				 **/
@@ -269,35 +272,33 @@ public class ServerServiceImpl implements ServerService {
 			e.printStackTrace();
 			return null;
 		}
-		
 		return MyServers;
 	}
-
 	
 	@Override
 	public void setOwnerToServers(Map<String, Server> MyServers,List<UserMYIPMS> _users) {
 		
 		int i = 0;
+		if(_users.size()<1)return;
 		for (Map.Entry<String, Server> serv : MyServers.entrySet()) {
 			try {
-				String resMYIPMS = getOwner(serv.getValue().getIp(), _users.get(0));
+				String resMYIPMS = getOwner(serv.getValue().getIp(), _users.get( (i%_users.size()) ));
+				System.out.println(resMYIPMS+" --- result");
 				Owner  O = _MYIPMS.AddNewOwner(resMYIPMS);
 				System.out.println("owner id : "+O.getId());
 				serv.getValue().setOwner(O);
 				this.srv.UpdateServer(serv.getValue());
-				Thread.sleep(500);
+				Thread.sleep(5000);
 				i++;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				i++;
 			}
 		}
-		
 	}
-
 	
 	@Override
-	public int getRangesforOwners(List<UserMYIPMS> users, List<Owner> owners) {
-	
+	public int getRangesforOwners(List<UserMYIPMS> users, List<Owner> owners) {				
 		return 0;
 	}
 }
