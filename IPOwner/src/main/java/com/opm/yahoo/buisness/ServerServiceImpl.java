@@ -41,7 +41,8 @@ public class ServerServiceImpl implements ServerService {
 	IPadressDAO ip;
 	@Autowired
 	ServiceMYIPMS _MYIPMS;
-	
+	@Autowired
+	MyipsOwnerProcess OwnerProcess;
 	@Override
 	public Map<String, Server> LoadServers(String SrcFilePath, Map<String, Server> MyServers) throws IOException{
 		
@@ -275,19 +276,28 @@ public class ServerServiceImpl implements ServerService {
 	
 	@Override
 	public void setOwnerToServers(Map<String, Server> MyServers,List<UserMYIPMS> _users) {
+		
 		int i = 0;
 		for (Map.Entry<String, Server> serv : MyServers.entrySet()) {
 			try {
 				String resMYIPMS = getOwner(serv.getValue().getIp(), _users.get(0));
 				Owner  O = _MYIPMS.AddNewOwner(resMYIPMS);
+				System.out.println("owner id : "+O.getId());
+				serv.getValue().setOwner(O);
+				this.srv.UpdateServer(serv.getValue());
 				Thread.sleep(500);
 				i++;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-
 		}
+		
 	}
+
 	
+	@Override
+	public int getRangesforOwners(List<UserMYIPMS> users, List<Owner> owners) {
 	
+		return 0;
+	}
 }

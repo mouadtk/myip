@@ -1,3 +1,5 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <!--[if IE 8]><html class="ie8" lang="en"><![endif]-->
 <!--[if IE 9]><html class="ie9" lang="en"><![endif]-->
@@ -90,17 +92,17 @@
 					<!-- start: PAGE CONTENT -->
 					<div class="row">
 						<div class="col-md-12">
-							<div class="panel panel-white">
+							<div class="panel panel-white" style="position: relative;margin: 20px auto;width: 60%;">
 								<div class="panel-body results">
 									<div class="panel-body">
 										<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="/index/formProcess">
 											<div class="form-group">
-												<div class="col-sm-12">
+												<div class="col-sm-6">
 													<label>
 														Server Fileze
 													</label>
 													<div data-provides="fileupload" class="fileupload fileupload-new">
-														<span class="btn btn-file btn-light-grey"><i class="fa fa-folder-open-o"></i> <span class="fileupload-new">Select file</span><span class="fileupload-exists">Source file</span>
+														<span class="btn btn-file btn-primary"><i class="fa fa-folder-open-o"></i> <span class="fileupload-new">Select file</span><span class="fileupload-exists">Source file</span>
 															<input type="file" name="file">
 														</span>
 														<span class="fileupload-preview"></span>
@@ -112,17 +114,13 @@
 														Upload servers source file.
 													</p>
 												</div>
-												<div class="col-sm-12">
-														<br /> Name: <input
-															type="text" name="name"><br /> <br /> 
-															<input type="submit"
-															value="Upload"> Press here to upload the file!
+												<div class="col-sm-6">
+													<br /> Name: <input type="text" name="name"><br /> <br /> 
+													<input class="btn btn-primary" type="submit" value="Upload"> Press here to upload the file!
 												</div>
 											</div>
 										</form>
 									</div>
-
-
 								</div>
 								<!-- end: PAGE CONTENT-->
 							</div>
@@ -136,73 +134,28 @@
 											<thead>
 												<tr>
 													<th>Owner Name</th>
-													<th class="hidden-xs">Number of Servers</th>
+													<th class="hidden-xs">Nbr Servers</th>
 													<th>Servers </th>
-													<th class="hidden-xs"> IP Ranges</th>													
+													<th class="hidden-xs"> IP Ranges</th>
 												</tr>
 											</thead>
 											<tbody>
+											<c:forEach items="${_owners}" var="owner">
 												<tr>
-													<td>Amaya</td>
-													<td class="hidden-xs">W3C,
-													INRIA</td>
-													<td>Free</td>
-													<td class="hidden-xs">W3C</td>
+													<td>${owner.name}</td>
+													<td class="hidden-xs" style="width:70px">${fn:length(owner.servers)}</td>
+													<td>
+														<c:forEach items="${owner.servers}" var="server">
+															${server.name},
+														</c:forEach>
+													</td>
+													<td class="hidden-xs">
+														<c:forEach items="${owner.range}" var="range">
+															[${range.value}]
+														</c:forEach>
+													</td>
 												</tr>
-												<tr>
-													<td>AOL Explorer</td>
-													<td class="hidden-xs">America Online, Inc</td>
-													<td>Free</td>
-													<td class="hidden-xs">Proprietary</td>
-												</tr>
-												<tr>
-													<td>Arora</td>
-													<td class="hidden-xs">Benjamin C. Meyer</td>
-													<td>Free</td>
-													<td class="hidden-xs">GPL</td>
-												</tr>
-												<tr>
-													<td>Avant</td>
-													<td class="hidden-xs">Avant Force</td>
-													<td>Free</td>
-													<td class="hidden-xs">Proprietary</td>
-												</tr>
-												<tr>
-													<td>Camino</td>
-													<td class="hidden-xs">The Camino Project</td>
-													<td>Free</td>
-													<td class="hidden-xs">tri-license</td>
-												</tr>
-												<tr>
-													<td>Chromium</td>
-													<td class="hidden-xs">Google</td>
-													<td>Free</td>
-													<td class="hidden-xs">BSD</td>
-												</tr>
-												<tr>
-													<td>Dillo</td>
-													<td class="hidden-xs">The Dillo team</td>
-													<td>Free</td>
-													<td class="hidden-xs">GPL</td>
-												</tr>
-												<tr>
-													<td>Dooble</td>
-													<td class="hidden-xs">Dooble Team</td>
-													<td>Free</td>
-													<td class="hidden-xs">GPL</td>
-												</tr>
-												<tr>
-													<td>ELinks</td>
-													<td class="hidden-xs">Baudis, Fonseca, <i>et al.</i></td>
-													<td>Free</td>
-													<td class="hidden-xs">GPL</td>
-												</tr>
-												<tr>
-													<td>Web</td>
-													<td class="hidden-xs">Marco Pesenti Gritti</td>
-													<td>Free</td>
-													<td class="hidden-xs">GPL</td>
-												</tr>
+											</c:forEach>						
 											</tbody>
 										</table>
 									</div>

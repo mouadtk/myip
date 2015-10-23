@@ -9,4 +9,5 @@ public interface ServiceMYIPMS {
 	
 	public List<UserMYIPMS> getAllUsers(); 
 	public Owner AddNewOwner(String... params);
+	public List<Owner> getAllOWners();
 }

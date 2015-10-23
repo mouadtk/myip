@@ -72,4 +72,17 @@ public class ServiceMYIPMSImpl implements ServiceMYIPMS{
             return null;
         }
 	}
+
+	@Override
+	public List<Owner> getAllOWners() {
+		List<Owner> owners =  _owner.getAllOwners();
+		if(owners!= null){
+			for (Owner O : owners) {
+				Hibernate.initialize(O.getServers());
+				Hibernate.initialize(O.getRange());
+			}
+		}
+		return owners;
+		
+	}
 }

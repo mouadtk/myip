@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.opm.yahoo.buisness.ServerService;
 import com.opm.yahoo.buisness.ServiceMYIPMS;
 import com.opm.yahoo.dao.ServerDAO;
+import com.opm.yahoo.models.Owner;
 import com.opm.yahoo.models.Server;
 import com.opm.yahoo.models.UserMYIPMS;
 
@@ -43,11 +44,13 @@ public class indexController {
 	private Environment environment;
 	
 	@RequestMapping(value = {"/","/index"}, method = RequestMethod.GET)
-	public ModelAndView provideUploadInfo() {
-		Server srv  = ServerDAO.getServerByNameNoOwner("ssv4210");
-		if(srv != null)
-			System.out.println(ServerDAO.getServerByNameNoOwner("ssv4210").getIp()+"-----------");
+	public ModelAndView index() {
+		
+		List<Owner> _Owners = ServiceMYIPMS.getAllOWners();
+		for(Owner O: _Owners)
+			System.out.println(O.getServers().size());
 		ModelAndView mv = new ModelAndView("index");
+		mv.addObject("_owners", _Owners);
 		return mv;
 	}
 	
@@ -60,8 +63,6 @@ public class indexController {
 			 * & check format
 			 **/
 			String ext = FilenameUtils.getExtension(file.getOriginalFilename());
-			System.out.println(ext);
-			
 			Map<String , Server> MyServers =  new HashMap<String, Server>();
 			/***
 			 * Upload source file.
@@ -90,26 +91,9 @@ public class indexController {
 			/**
 			 * get Owner of each Server
 			 **/
-			int i = 0;
-			
-			for (Map.Entry<String, Server> serv : MyServers.entrySet()) {
-				try {
-					String resMYIPMS = serverService.getOwner(serv.getValue().getIp(), _users.get(0));
-					//System.out.println("myips user: "+_users.get(0).getUsername());
-					//(new Scanner(System.in)).nextLine();
-					this.ServiceMYIPMS.AddNewOwner(resMYIPMS);
-					Thread.sleep(500);
-					i++;
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			
-//			String resMYIPMS = serverService.getOwner("66.147.230.66", _users.get(0));
-//			this.ServiceMYIPMS.AddNewOwner(resMYIPMS);
-			System.out.println("nbr owner"+ i);
+			this.serverService.setOwnerToServers(MyServers, _users);
 			System.out.println("nbr servers"+MyServers.size());
-			return "nbr owner"+ i+" - "+" nbr servers"+MyServers.size();
+			return "nbr servers"+MyServers.size();
 	}
 	
 	/***

@@ -2,12 +2,17 @@ package com.opm.yahoo.models;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -30,8 +35,16 @@ public class Owner implements Serializable{
 	@Column(columnDefinition  = "TEXT")
 	private String OwnerDetails;
 	
+	@ElementCollection(fetch = FetchType.EAGER) 
+	@MapKeyColumn(name="id")
+    @Column(name="value")	
+	private Map<Integer, String> Range;
+	
+	
 	@OneToMany( mappedBy = "Owner")
 	private Set<Server> Servers = new HashSet<Server>(0);
+	
+	
 	
 	public Owner(){}
 
@@ -72,6 +85,14 @@ public class Owner implements Serializable{
 
 	public void setOwnerDetails(String ownerDetails) {
 		OwnerDetails = ownerDetails;
+	}
+	
+	public Map<Integer, String> getRange() {
+		return Range;
+	}
+
+	public void setRange(Map<Integer, String> range) {
+		Range = range;
 	}
 
 	public Set<Server> getServers() {
