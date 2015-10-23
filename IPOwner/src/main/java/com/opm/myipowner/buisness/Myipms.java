@@ -8,6 +8,7 @@ import java.util.Map;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.opm.myipowner.models.Owner;
@@ -16,6 +17,14 @@ import com.opm.utils.DriverSetting;
 import com.opm.utils.ImageTools;
 import com.opm.utils.Proxies;
 
+
+/**
+ * 
+ * 
+ * @author Moaud-TK
+ *
+ *	
+ */
 @Service
 public class Myipms extends  Thread{
 	
@@ -23,6 +32,8 @@ public class Myipms extends  Thread{
 	static String CaptchaPath		= System.getProperty("user.dir") + "/Resources";
 	private List<Owner> owners = null;
 	private UserMYIPMS user;
+	private int maxQuery = 50;
+	@Autowired
 	
 	public List<Owner> getOwners() {
 		return owners;
@@ -92,12 +103,15 @@ public class Myipms extends  Thread{
 			driver = DriverSetting.withProxy();		
 			login(user.getUsername(), user.getPassword());
 			Thread.sleep(15000);
+			int index = 0;
 			for(Owner Ow :  this.owners){
+				if(index == maxQuery)break;
 				int i =0;
 				Map<Integer, String> ranges =  new HashMap<Integer, String>();
 				List<String> Res = getOwnerRangeIPs(Ow.getName());				
 				for(String rg : Res){ ranges. put(i, rg); i++;}
 				Ow.setRange(ranges);
+				index++;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

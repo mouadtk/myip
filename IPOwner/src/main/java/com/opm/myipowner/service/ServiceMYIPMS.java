@@ -12,5 +12,4 @@ public interface ServiceMYIPMS {
 	public Owner AddNewOwner(String... params);
 	public List<Owner> getAllOWners();
 	
-	
 }
