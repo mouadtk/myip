@@ -16,29 +16,40 @@ import com.google.common.collect.ImmutableMap;
 
 public class DriverSetting {
 
+
 	public static int i;
-	
+	public static String ChromedriverMac =  "/usr/local/bin/chromedriver";
+	public static String Chromedriver =  "/usr/local/bin/chromedriver";
+	static {
+		String os  = System.getProperty("os.name");
+		if(os.contains("Windows"))
+			Chromedriver =  "Resources/chromedriver.exe";
+		if(os.contains("mac os"))
+			Chromedriver =  "/usr/local/bin/chromedriver";
+		if(os.contains("linux"))
+			Chromedriver =  "/usr/local/bin/chromedriver";
+	}
 	
 	public static WebDriver withProxy() {
+		
 		i++;
 		if(i==Proxies.list.size())
 			i=0;
 		WebDriver driver =null;
 		boolean proxyBlocked=false;
 		ChromeDriverService service = new ChromeDriverService.Builder()
-				.usingDriverExecutable(new File(System.getProperty("os.name").contains("Windows") ?
-												System.getProperty("user.dir") + "/Resources/chromedriver.exe" :  "Chromedriver"))
+				.usingDriverExecutable(new File(Chromedriver))
 				.usingAnyFreePort().withEnvironment(ImmutableMap.of("DISPLAY", ":0.0")).build();
 		DesiredCapabilities capabilities;	
 		ChromeOptions options ;
 		try {
 			capabilities = DesiredCapabilities.chrome();
-			options =  new ChromeOptions();        	
+			options =  new ChromeOptions();
 			options.addExtensions(new File(Proxies.list.get(i).getPath()));
 	    	capabilities.setCapability(ChromeOptions.CAPABILITY,options );    
 			
-	 		driver = new ChromeDriver(service,capabilities);	
-	 		driver.manage().deleteAllCookies();	
+	 		driver = new ChromeDriver(service,capabilities);
+	 		driver.manage().deleteAllCookies();
 	 		driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
 	 		driver.manage().window();//.setPosition(new Point(1200, 1000));
 	 		driver.manage().window().setSize(new Dimension(1248, 800)); 		 		 		
@@ -107,7 +118,7 @@ public class DriverSetting {
 		try{
 		WebDriver driver;
 			ChromeDriverService service = new ChromeDriverService.Builder()
-					.usingDriverExecutable(new File("Resources/chromedriver.exe"))
+					.usingDriverExecutable(new File(Chromedriver))
 					.usingAnyFreePort().withEnvironment(ImmutableMap.of("DISPLAY", ":0.0")).build();
 			driver = new ChromeDriver(service);
 	 		driver.manage().window().setSize(new Dimension(1248, 800));  		

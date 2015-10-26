@@ -115,8 +115,12 @@
 													</p>
 												</div>
 												<div class="col-sm-6">
-													<br /> Name: <input type="text" name="name"><br /> <br /> 
-													<input class="btn btn-primary" type="submit" value="Upload"> Press here to upload the file!
+													<label >
+													</label>
+													<input class="btn btn-primary" type="submit" value="Upload" style="margin-top: 25px; width: 100px;">
+													<p class="help-block">
+													 Press here to upload the file!
+													 </p>
 												</div>
 											</div>
 										</form>
@@ -142,7 +146,9 @@
 											<tbody>
 											<c:forEach items="${_owners}" var="owner">
 												<tr>
-													<td>${owner.name}</td>
+													<td>
+														<c:set var="websites" value="${fn:split(owner.webSite, ',')}" />
+														<a href="http://${websites[0]}" >${owner.name}</a></td>
 													<td class="hidden-xs" style="width:70px">${fn:length(owner.servers)}</td>
 													<td>
 														<c:forEach items="${owner.servers}" var="server">
@@ -150,9 +156,18 @@
 														</c:forEach>
 													</td>
 													<td class="hidden-xs">
-														<c:forEach items="${owner.range}" var="range">
-															[${range.value}]
-														</c:forEach>
+														<div id="IPsRange">
+															<c:if test="${fn:length(owner.range) > 0}">
+															 	<c:forEach items="${owner.range}" var="range">
+																	[${range.value}]
+															  	</c:forEach>
+															</c:if>
+															<c:if test="${fn:length(owner.range) == 0}">
+															 	<a href="/index/getIPsRange?id=${owner.id}" type="button" id="requestRange_${owner.id}"  class="btn btn-danger">
+																	Request IPs range
+																</a>
+															</c:if>
+														</div>
 													</td>
 												</tr>
 											</c:forEach>						

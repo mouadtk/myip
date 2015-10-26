@@ -9,6 +9,7 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -43,8 +44,8 @@ public class ServerServiceImpl implements ServerService {
 	IPadressDAO ip;
 	@Autowired
 	ServiceMYIPMS _MYIPMS;
-	@Autowired
-	Myipms OwnerProcess;
+
+	
 	@Override
 	public Map<String, Server> LoadServers(String SrcFilePath, Map<String, Server> MyServers) throws IOException{
 		
@@ -276,25 +277,25 @@ public class ServerServiceImpl implements ServerService {
 	}
 	
 	@Override
-	public void setOwnerToServers(Map<String, Server> MyServers,List<UserMYIPMS> _users) {
-		
+	public List<Owner> setOwnerToServers(Map<String, Server> MyServers,List<UserMYIPMS> _users) {
+		List<Owner> _owners = new ArrayList<Owner>();
 		int i = 0;
-		if(_users.size()<1)return;
+		if(_users.size()<1)return null;
 		for (Map.Entry<String, Server> serv : MyServers.entrySet()) {
 			try {
 				String resMYIPMS = getOwner(serv.getValue().getIp(), _users.get( (i%_users.size()) ));
-				System.out.println(resMYIPMS+" --- result");
 				Owner  O = _MYIPMS.AddNewOwner(resMYIPMS);
-				System.out.println("owner id : "+O.getId());
 				serv.getValue().setOwner(O);
 				this.srv.UpdateServer(serv.getValue());
 				Thread.sleep(5000);
+				_owners.add(O);
 				i++;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				i++;
 			}
 		}
+		return _owners;
 	}
 	
 	@Override

@@ -9,31 +9,36 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.opm.myipowner.models.Owner;
 import com.opm.myipowner.models.UserMYIPMS;
+import com.opm.myipowner.service.ServiceMYIPMS;
 import com.opm.utils.DriverSetting;
 import com.opm.utils.ImageTools;
 import com.opm.utils.Proxies;
-
+import com.opm.myipowner.dao.OwnerDAO;
 
 /**
- * 
- * 
- * @author Moaud-TK
  *
- *	
+ * @author Moaud-TK
  */
+
 @Service
+@Scope("prototype")
 public class Myipms extends  Thread{
+	
 	
 	WebDriver driver;
 	static String CaptchaPath		= System.getProperty("user.dir") + "/Resources";
 	private List<Owner> owners = null;
 	private UserMYIPMS user;
+	
 	private int maxQuery = 50;
-	@Autowired
+		
+	public ServiceMYIPMS MYIPMS;
 	
 	public List<Owner> getOwners() {
 		return owners;
@@ -91,6 +96,10 @@ public class Myipms extends  Thread{
 	@Override
 	public void run(){
 		
+		if(this.MYIPMS == null){
+			System.out.println("waaalo");
+			return;
+		}
 		try{
 			/**
 			 * Generate proxies extensions
@@ -100,28 +109,32 @@ public class Myipms extends  Thread{
 			/**
 			 * launch driver
 			 ***/
-			driver = DriverSetting.withProxy();		
+			driver = DriverSetting.withoutProxy();
 			login(user.getUsername(), user.getPassword());
 			Thread.sleep(15000);
 			int index = 0;
-			for(Owner Ow :  this.owners){
+			
+			for(int j=0; j<this.owners.size() ;j++){
+				
 				if(index == maxQuery)break;
 				int i =0;
 				Map<Integer, String> ranges =  new HashMap<Integer, String>();
-				List<String> Res = getOwnerRangeIPs(Ow.getName());				
+				List<String> Res = getOwnerRangeIPs(owners.get(j).getName());		
 				for(String rg : Res){ ranges. put(i, rg); i++;}
-				Ow.setRange(ranges);
+				owners.get(j).setRange(ranges);
+				this.MYIPMS.UpdateOwner(owners.get(j));
 				index++;
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			if(driver!=null)
 				driver.quit();
 		}
+		driver.quit();
 	}
 
 	public List<String> getOwnerRangeIPs(String nameOwner){
-		
 		/**
 		 * get IP Ranges for each
 		 **/
@@ -146,8 +159,4 @@ public class Myipms extends  Thread{
 		}
 	}
 
-	public static void main(String argv[] ){
-		new Myipms().run();
-	}
-	
 }

@@ -21,7 +21,8 @@ import com.opm.myipowner.models.UserMYIPMS;
 @Service("ServiceMYIPMS")
 @Transactional
 public class ServiceMYIPMSImpl implements ServiceMYIPMS{
-
+	
+	public static String id = "ddddd";
 	@Autowired
 	UsermyipmsDAO _user;
 	@Autowired
@@ -46,14 +47,10 @@ public class ServiceMYIPMSImpl implements ServiceMYIPMS{
             Object obj = parser.parse(params[0]);
             JSONObject jsonObject = (JSONObject) obj;
             JSONObject owners = (JSONObject) jsonObject.get("owners");
-//            if(	!((String)  owners.get("status")).equals("ok")){
-//            	System.out.println(owners.toString());
-//            	return null;
-//            }
             JSONObject owner = (JSONObject) owners.get("owner");
             
-            System.out.println("Owner Object to String  :"+   owner.toString());
-            System.out.println("Owner web site :"+ (String)  owner.get("website"));
+            //System.out.println("Owner Object to String  :"+   owner.toString());
+            //System.out.println("Owner web site :"+ (String)  owner.get("website"));
             String WebSiteOwner = (String)  owner.get("website");
             String NameOwner = (String)  owner.get("ownerName");
             
@@ -93,6 +90,18 @@ public class ServiceMYIPMSImpl implements ServiceMYIPMS{
 	public List<UserMYIPMS> getAllActiveUsers() {
 
 		return _user.getAllActiveUserMYIPMS();
+	}
+
+	
+	@Override
+	public Owner getOwnerByID(int id) {
+		return _owner.getOwnerByID(id);
+	}
+
+	
+	@Override
+	public boolean UpdateOwner(Owner o) {
+		return _owner.UpdateOwner(o);
 	}
 
 	

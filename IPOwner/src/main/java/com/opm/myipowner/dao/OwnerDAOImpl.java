@@ -93,4 +93,18 @@ public class OwnerDAOImpl implements OwnerDAO {
 	}
 
 
+	@Override
+	public Owner getOwnerByID(int id) {
+		
+		try{
+			Session session = HibernateSessFactory.getCurrentSession();
+			Criteria crit = session.createCriteria(Owner.class);
+			crit.add(Restrictions.eq("Id", id));
+			return  crit.uniqueResult()!=null ? (Owner) crit.uniqueResult() : null;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 }

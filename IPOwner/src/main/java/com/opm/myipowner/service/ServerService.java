@@ -14,7 +14,7 @@ public interface ServerService {
 	public String getOwner(String ip, UserMYIPMS user);
 	public int SetOwnerPerServer(List<UserMYIPMS> users, List<Server> servers);
 	public Map<String, Server> LoadServersWithNoOwner(String SrcFilePath, Map<String, Server> MyServers) throws IOException;
-	public void setOwnerToServers(Map<String,Server> Servers, List<UserMYIPMS> users);
+	public List<Owner> setOwnerToServers(Map<String,Server> Servers, List<UserMYIPMS> users);
 	/**
 	 * return Nbr of servvers have been treated
 	 */

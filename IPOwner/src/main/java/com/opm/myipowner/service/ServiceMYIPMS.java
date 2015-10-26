@@ -7,9 +7,17 @@ import com.opm.myipowner.models.UserMYIPMS;
 
 public interface ServiceMYIPMS {
 	
+	/**
+	 * User section
+	 **/
 	public List<UserMYIPMS> getAllUsers(); 
 	public List<UserMYIPMS> getAllActiveUsers();
-	public Owner AddNewOwner(String... params);
+	/**
+	 * 
+	 * Owner section
+	 */
 	public List<Owner> getAllOWners();
-	
+	public Owner AddNewOwner(String... params);
+	public Owner getOwnerByID(int id); 
+	public boolean UpdateOwner(Owner o);
 }
