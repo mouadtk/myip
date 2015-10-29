@@ -9,13 +9,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.FilenameUtils;
-import org.glassfish.jersey.process.internal.RequestScope.Instance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,41 +52,43 @@ public class indexController {
 	private Environment environment;
 	
 	@RequestMapping(value = {"/","/index"}, method = RequestMethod.GET)
-	public ModelAndView index() {
-		
+	public ModelAndView index() {		
 		
 		List<Owner> _Owners = ServiceMYIPMS.getAllOWners();
-		ModelAndView mv = new ModelAndView("index");		
+		ModelAndView mv = new ModelAndView("index");
 		mv.addObject("_owners", _Owners);
 		return mv;
 		
 	}
 	
 	@RequestMapping(value = "/formProcess", method = RequestMethod.POST)
-	public @ResponseBody String handleFileUpload(@RequestParam("file") MultipartFile file){
+	public ModelAndView handleFileUpload(@RequestParam("file") MultipartFile file){
+			
+			ModelAndView mv = new ModelAndView("index");
+			List<Owner> _Owners = ServiceMYIPMS.getAllOWners();
+			mv.addObject("_owners", _Owners);
 			/**
 			 * check if source is an excel file
-			 * & check format
+			 * & check format (not yet implemented)
 			 **/
 			String ext = FilenameUtils.getExtension(file.getOriginalFilename());
 			Map<String , Server> MyServers =  new HashMap<String, Server>();
 			/***
-			 * Upload source file.
-			 **/
+			 * Upload source file. save it 
+			 ***/
 			Date dNow 			= new Date();
 	        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd_HH-mm-ss");
 	        String name 	= ft.format(dNow);
 			String srcFile = this.UploadFile(name, file);
-			if(srcFile.contains("You failed"))
-				return "Failed to upload Servers File";
+			if(srcFile.contains("failed"))
+				return mv.addObject("ErrorMessage","Failed to upload Servers File");
 			/**
-			 * Upload Servers
+			 * Upload Servers with no Owners
 			 **/
 			try{
 				MyServers = serverService.LoadServersWithNoOwner(srcFile, MyServers);
 				if(MyServers == null){
-					return "Server List is empty";
-					
+					return mv.addObject("ErrorMessage","No Server to check (or servers already exist)");
 				}
 			}catch(Exception e){
 				System.out.println(e.getMessage());
@@ -96,43 +98,50 @@ public class indexController {
 			 **/
 			List<UserMYIPMS> _users = ServiceMYIPMS.getAllActiveUsers();
 			System.out.println(_users.size());
-			(new Scanner(System.in)).nextLine();
 			if(_users.isEmpty())
-				return "no user exist!";
+				return mv.addObject("ErrorMessage","no user exist!");
 			/**
 			 * get Owner of each Server
 			 **/
-			
 			List<Owner> _owners = this.serverService.setOwnerToServers(MyServers, _users);
-
 			Myipms process = new Myipms();
 			process.setOwners(_owners);
 			process.setUser(_users.get(0));
-			//_myipsqProcess.OwnersIPRanges("", process);
+			/**
+			 * RETURN sERVERS IN PROCESS
+			 **/
+			mv.addObject("_myservers", MyServers);
+			return mv;
 			
-			return "nbr servers"+MyServers.size();
 	}
 	
 	@RequestMapping(value = "/getIPsRange", method = RequestMethod.GET)
-	public @ResponseBody String getIPsRange(@RequestParam("id") String id){
-		
-		List<Owner> ListOwners = new ArrayList<Owner>();
-		ListOwners.add(ServiceMYIPMS.getOwnerByID(Integer.parseInt(id)));
+	public @ResponseBody String getIPsRange(@RequestParam("id") String id) {
 		
 		List<UserMYIPMS> ListUsers =  new ArrayList<UserMYIPMS>();
+		List<Owner> owns = new ArrayList<Owner>();
+		Owner O =ServiceMYIPMS.getOwnerByID(Integer.parseInt(id));
+		owns.add(O);
 		ListUsers.addAll(ServiceMYIPMS.getAllActiveUsers());
-		//_myipsqProcess.OwnersIPRanges(id+"", ListUsers, ListOwners);
-		Myipms _myipmsGetOwnersIPRange = new Myipms();
-		_myipmsGetOwnersIPRange.setOwners(ListOwners);
-		_myipmsGetOwnersIPRange.setUser(ListUsers.get(0));
-		_myipmsGetOwnersIPRange.MYIPMS  = this.ServiceMYIPMS;
-		// if (_myipmsGetOwnersIPRange.MYIPMS instanceof ServiceMYIPMS && _myipmsGetOwnersIPRange.MYIPMS!= null);
-		_myipmsGetOwnersIPRange.run();
-		
+		//_myipsqProcess._OwnersIPRanges( ListUsers, owns);
+		_myipsqProcess.getSignleOwnerIPsRange(ServiceMYIPMS.getAllActiveUsers().get(0),O);
+		Map<Integer, String> range = new HashMap<Integer, String>();
+		range.put(0, "processing");
+		O.setRange(range);
+		ServiceMYIPMS.UpdateOwner(O);
 		return id;
-	
 	}
 	
+	@RequestMapping(value = "/TaskManager", method = RequestMethod.GET)
+	public @ResponseBody String taks(@RequestParam("id") String id){
+		
+		int index = _myipsqProcess.IPsRangeProcess.size();
+		String res = "";
+		for(Entry<String, ThreadPoolTaskExecutor> Entry : _myipsqProcess.IPsRangeProcess.entrySet()){
+			res+= Entry.getKey()+"-> Count active tasks: "+Entry.getValue().getActiveCount()+" -- Pool Size : "+Entry.getValue().getCorePoolSize()+"<br/>";
+		}
+		return index+"<hr><br>"+res;
+	}
 	/***
 	 * Upload & save file, rename it , and return path to it
 	 * @param 	name

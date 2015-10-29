@@ -9,9 +9,10 @@ import java.util.List;
 public class Proxies {
 	
 	public static List<Proxy> list= new ArrayList<Proxy>();
-	static String myProxiesPath="Resources/proxy";
+	static String myProxiesPath = System.getProperty("user.dir") + "/resources/proxy";
 	
 	public static void doGenerateAllZip() throws Exception{
+		
 		BufferedReader br = null;
 		try {
 			String sCurrentLine;

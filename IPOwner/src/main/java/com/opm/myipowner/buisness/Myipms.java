@@ -26,13 +26,13 @@ import com.opm.myipowner.dao.OwnerDAO;
  * @author Moaud-TK
  */
 
-@Service
+@Component
 @Scope("prototype")
 public class Myipms extends  Thread{
 	
 	
 	WebDriver driver;
-	static String CaptchaPath		= System.getProperty("user.dir") + "/Resources";
+	static String CaptchaPath		= System.getProperty("user.dir") + "/resources";
 	private List<Owner> owners = null;
 	private UserMYIPMS user;
 	
@@ -75,7 +75,7 @@ public class Myipms extends  Thread{
 				Thread.sleep(3000);
 				ImageTools.getImageSupprot(driver,By.cssSelector("img[id^=code_image]") ,CaptchaPath+"/","captcha");
 				String captchResult = ImageTools.getCaptcha(CaptchaPath+"/captcha.png");
-				WebElement captcha = driver.findElement(By.cssSelector("input[id^=code_image]"));
+				WebElement captcha = driver.findElement(By.cssSelector("input[id=code]"));
 				captcha.clear();
 				captcha.sendKeys(captchResult + "");
 				}

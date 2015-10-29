@@ -125,8 +125,7 @@
 											<div class="form-group">
 												<div class="col-sm-6">
 													<label> Server Fileze </label>
-													<div data-provides="fileupload"
-														class="fileupload fileupload-new">
+													<div data-provides="fileupload" class="fileupload fileupload-new">
 														<span class="btn btn-file btn-primary"><i
 															class="fa fa-folder-open-o"></i> <span
 															class="fileupload-new">Select file</span><span
@@ -203,7 +202,7 @@
 														</c:forEach></td>
 													<td class="hidden-xs">
 														<div id="IPsRange">
-															<c:if test="${fn:length(owner.range) > 0}">
+															<c:if test="${fn:length(owner.range) > 1}">
 																<div>
 																	<div class="form-group">
 																		<select id="form-field-select-3" style="width: 290px" class="form-control search-select">
@@ -218,8 +217,8 @@
 															<c:if test="${fn:length(owner.range) == 0}">
 																<a href="/index/getIPsRange?id=${owner.id}" type="button" id="requestRange_${owner.id}" class="btn btn-danger"> Request IPs range </a>
 															</c:if>
-															<c:if test="${owner.range[0] =='process'}">
-																<a href="/index/getIPsRange?id=${owner.id}" type="button" id="requestRange_${owner.id}" class="btn btn-danger"> Request IPs range </a>
+															<c:if test="${owner.range[0] =='processing'}">
+																<a href="#" type="button" id="requestRange_${owner.id}" class="btn btn-danger">processing  </a>
 															</c:if>
 														</div>
 													</td>

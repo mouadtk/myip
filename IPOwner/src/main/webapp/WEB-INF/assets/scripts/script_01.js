@@ -1,14 +1,16 @@
 var _data;
 
-$("#").click(function() {
-    
-    /**
-     * Request IPs Range 
-     **/
-    
-    
-}
-
-$("#closewindow").click(function() {
-    
+$(document).ready(function(){
+	/**
+	 * Refresh page every 10sc 
+	 **/
+	(function countdown(remaining) {
+	    if(remaining <= 0)
+	        location.reload(true);
+	    setTimeout(function(){ countdown(remaining - 1); }, 1000);
+	})(60);
+	/**
+	 * 
+	 **/
+	
 });

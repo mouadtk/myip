@@ -2,10 +2,10 @@ package com.opm.myipowner.models;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -36,6 +36,7 @@ public class Owner implements Serializable{
 	private String OwnerDetails;
 	
 	@ElementCollection(fetch = FetchType.EAGER) 
+	@CollectionTable(name="owner_range")
 	@MapKeyColumn(name="id")
     @Column(name="value")	
 	private Map<Integer, String> Range;

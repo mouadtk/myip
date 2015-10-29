@@ -23,11 +23,12 @@ public class DriverSetting {
 	static {
 		String os  = System.getProperty("os.name");
 		if(os.contains("Windows"))
-			Chromedriver =  "Resources/chromedriver.exe";
+			Chromedriver =  "resources/chromedriver.exe";
 		if(os.contains("mac os"))
 			Chromedriver =  "/usr/local/bin/chromedriver";
 		if(os.contains("linux"))
 			Chromedriver =  "/usr/local/bin/chromedriver";
+		
 	}
 	
 	public static WebDriver withProxy() {
@@ -39,7 +40,7 @@ public class DriverSetting {
 		boolean proxyBlocked=false;
 		ChromeDriverService service = new ChromeDriverService.Builder()
 				.usingDriverExecutable(new File(Chromedriver))
-				.usingAnyFreePort().withEnvironment(ImmutableMap.of("DISPLAY", ":0.0")).build();
+				.usingAnyFreePort().withEnvironment(ImmutableMap.of("DISPLAY", ":1.0")).build();
 		DesiredCapabilities capabilities;	
 		ChromeOptions options ;
 		try {
@@ -119,7 +120,7 @@ public class DriverSetting {
 		WebDriver driver;
 			ChromeDriverService service = new ChromeDriverService.Builder()
 					.usingDriverExecutable(new File(Chromedriver))
-					.usingAnyFreePort().withEnvironment(ImmutableMap.of("DISPLAY", ":0.0")).build();
+					.usingAnyFreePort().withEnvironment(ImmutableMap.of("DISPLAY", ":1.0")).build();
 			driver = new ChromeDriver(service);
 	 		driver.manage().window().setSize(new Dimension(1248, 800));  		
 	 		return driver;
