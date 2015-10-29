@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.io.FilenameUtils;
+import org.opensaml.ws.wsaddressing.ProblemAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -57,6 +58,7 @@ public class indexController {
 		List<Owner> _Owners = ServiceMYIPMS.getAllOWners();
 		ModelAndView mv = new ModelAndView("index");
 		mv.addObject("_owners", _Owners);
+		mv.addObject("ErrorMessage","Failed to upload Servers File");
 		return mv;
 		
 	}
@@ -64,7 +66,7 @@ public class indexController {
 	@RequestMapping(value = "/formProcess", method = RequestMethod.POST)
 	public ModelAndView handleFileUpload(@RequestParam("file") MultipartFile file){
 			
-			ModelAndView mv = new ModelAndView("index");
+			ModelAndView mv = new ModelAndView("/index/index");
 			List<Owner> _Owners = ServiceMYIPMS.getAllOWners();
 			mv.addObject("_owners", _Owners);
 			/**
@@ -115,22 +117,26 @@ public class indexController {
 			
 	}
 	
-	@RequestMapping(value = "/getIPsRange", method = RequestMethod.GET)
-	public @ResponseBody String getIPsRange(@RequestParam("id") String id) {
-		
-		List<UserMYIPMS> ListUsers =  new ArrayList<UserMYIPMS>();
-		List<Owner> owns = new ArrayList<Owner>();
-		Owner O =ServiceMYIPMS.getOwnerByID(Integer.parseInt(id));
-		owns.add(O);
-		ListUsers.addAll(ServiceMYIPMS.getAllActiveUsers());
-		//_myipsqProcess._OwnersIPRanges( ListUsers, owns);
-		_myipsqProcess.getSignleOwnerIPsRange(ServiceMYIPMS.getAllActiveUsers().get(0),O);
-		Map<Integer, String> range = new HashMap<Integer, String>();
-		range.put(0, "processing");
-		O.setRange(range);
-		ServiceMYIPMS.UpdateOwner(O);
-		return id;
-	}
+//	@RequestMapping(value = "/getIPsRange", method = RequestMethod.GET)
+//	public ModelAndView getIPsRange(@RequestParam("id") String id) {
+//		
+//		ModelAndView mv = new ModelAndView("index");
+//		List<UserMYIPMS> ListUsers =  new ArrayList<UserMYIPMS>();
+//		List<Owner> owns = new ArrayList<Owner>();
+//		Owner O =ServiceMYIPMS.getOwnerByID(Integer.parseInt(id));
+//		owns.add(O);
+//		ListUsers.addAll(ServiceMYIPMS.getAllActiveUsers());
+//		_myipsqProcess.getSignleOwnerIPsRange(ServiceMYIPMS.getAllActiveUsers().get(0),O);
+//		Map<Integer, String> range = new HashMap<Integer, String>();
+//		range.put(0, "processing");
+//		O.setRange(range);
+//		ServiceMYIPMS.UpdateOwner(O);
+//		
+//		List<Owner> _Owners = ServiceMYIPMS.getAllOWners();
+//		mv.addObject("_owners", _Owners);
+//		mv.addObject("Notification","Processing request for "+ O.getName());
+//		return mv;
+//	}
 	
 	@RequestMapping(value = "/TaskManager", method = RequestMethod.GET)
 	public @ResponseBody String taks(@RequestParam("id") String id){
@@ -142,6 +148,26 @@ public class indexController {
 		}
 		return index+"<hr><br>"+res;
 	}
+	
+	@RequestMapping(value = "/callipsrange", method = RequestMethod.GET)
+	public @ResponseBody String CallIPsRange(@RequestParam("id") String id) {
+		
+		List<UserMYIPMS> ListUsers =  new ArrayList<UserMYIPMS>();
+		List<Owner> owns = new ArrayList<Owner>();
+		Owner O =ServiceMYIPMS.getOwnerByID(Integer.parseInt(id));
+		owns.add(O);
+		ListUsers.addAll(ServiceMYIPMS.getAllActiveUsers());
+		//_myipsqProcess._OwnersIPRanges( ListUsers, owns);
+		_myipsqProcess.getSignleOwnerIPsRange(ServiceMYIPMS.getAllActiveUsers().get(0),O);
+		Map<Integer, String> range = new HashMap<Integer, String>();
+		range.put(0, "processing");
+		O.setRange(range);
+		if(ServiceMYIPMS.UpdateOwner(O))
+			return "Processing request for "+ O.getName();
+		else
+			return "Problem  when treating Owner :'"+ O.getName()+"'";
+	}
+	
 	/***
 	 * Upload & save file, rename it , and return path to it
 	 * @param 	name

@@ -20,7 +20,7 @@
 <meta content="" name="description" />
 <meta content="" name="author" />
 <!-- end: META -->
-<!-- start: MAIN CSS -->
+<!-- start: MAIN CSS --> 
 <link
 	href='http://fonts.googleapis.com/css?family=Raleway:400,300,500,600,700,200,100,800'
 	rel='stylesheet' type='text/css'>
@@ -75,6 +75,20 @@
 <link rel="stylesheet" href="assets/css/plugins.css">
 <link rel="stylesheet" href="assets/css/themes/theme-default.css" type="text/css" id="skin_color">
 <link rel="stylesheet" href="assets/css/print.css" type="text/css" media="print" />
+<link rel="stylesheet" href="assets/plugins/toastr/toastr.min.css">
+		<!-- start: CSS REQUIRED FOR SUBVIEW CONTENTS -->
+			<link rel="stylesheet" href="assets/plugins/owl-carousel/owl-carousel/owl.carousel.css">
+			<link rel="stylesheet" href="assets/plugins/owl-carousel/owl-carousel/owl.theme.css">
+			<link rel="stylesheet" href="assets/plugins/owl-carousel/owl-carousel/owl.transitions.css">
+			<link rel="stylesheet" href="assets/plugins/summernote/dist/summernote.css">
+			<link rel="stylesheet" href="assets/plugins/fullcalendar/fullcalendar/fullcalendar.css">
+			<link rel="stylesheet" href="assets/plugins/toastr/toastr.min.css">
+			<link rel="stylesheet" href="assets/plugins/bootstrap-select/bootstrap-select.min.css">
+			<link rel="stylesheet" href="assets/plugins/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css">
+			<link rel="stylesheet" href="assets/plugins/DataTables/media/css/DT_bootstrap.css">
+			<link rel="stylesheet" href="assets/plugins/bootstrap-fileupload/bootstrap-fileupload.min.css">
+			<link rel="stylesheet" href="assets/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css">
+		<!-- end: CSS REQUIRED FOR THIS SUBVIEW CONTENTS-->
 <!-- end: CORE CSS -->
 <link rel="shortcut icon" type="image/ico" href="assets/images/favicon.ico" />
 </head>
@@ -108,7 +122,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<ol class="breadcrumb">
-								<li><a href="#"> Dashboard </a></li>
+								<li><a href="#">  </a></li>
 							</ol>
 						</div>
 					</div>
@@ -149,26 +163,8 @@
 									</div>
 								</div>
 								<!-- end: PAGE CONTENT-->
-							</div>
-							<c:if test="${!empty ErrorMessage}">
-							<!-- Pannel de messages & notification -->
-							<div class="panel panel-white"
-								style="position: relative; margin: 20px auto; width: 60%;">
-								<div class="panel-body results">
-									<div class="panel-body">
-										<form class="form-horizontal" method="POST"
-											enctype="multipart/form-data" action="/index/formProcess">
-											<div class="form-group">
-												<div class="col-sm-6"></div>
-												<div class="col-sm-6"></div>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-							</c:if>
-							<!-- Pannel de messages & notification -->
-							
+							</div>							
+							<!-- Pannel de messages & notification -->										
 							<!-- start: Result 'Tableau' -->
 							<div class="panel panel-white tablePanel"
 								style="min-height: 300px;">
@@ -193,32 +189,43 @@
 										<tbody>
 											<c:forEach items="${_owners}" var="owner">
 												<tr>
-													<td><c:set var="websites"
-															value="${fn:split(owner.webSite, ',')}" /> <a
-														href="http://${websites[0]}">${owner.name}</a></td>
+													<td>
+														<c:set var="websites" value="${fn:split(owner.webSite, ',')}" /> 
+														<a href="http://${websites[0]}">${owner.name}</a></td>
 													<td class="hidden-xs" style="width: 70px">${fn:length(owner.servers)}</td>
-													<td><c:forEach items="${owner.servers}" var="server">
+													<td>
+														<c:forEach items="${owner.servers}" var="server">
 															${server.name},
-														</c:forEach></td>
+														</c:forEach>
+													</td>
 													<td class="hidden-xs">
-														<div id="IPsRange">
-															<c:if test="${fn:length(owner.range) > 1}">
-																<div>
-																	<div class="form-group">
-																		<select id="form-field-select-3" style="width: 290px" class="form-control search-select">
-																			<option>${fn:length(owner.range)}Range(s)</option>
-																			<c:forEach items="${owner.range}" var="range">
-																				<option value="${range.value}">[${range.value}]</option>
-																			</c:forEach>
-																		</select>
-																	</div>
-																</div>
+														<div id="${owner.id}">
+															<c:if test="${fn:length(owner.range) > 0}">
+																<c:set var="noRange" value="true"/>
+																<c:forEach items="${owner.range}" var="range">
+																	<c:if test="${range.value == 'processing'}">
+																		<c:set var="noRange" value="false"/>
+																		<a href="#" type="button" id="requestRange_${range.value}" class="btn btn-blue">processing  </a>
+																	</c:if>
+																</c:forEach>
+																
+																<c:if test="${noRange == true}" >
+																	<div>
+																		<div class="form-group">
+																			<select id="form-field-select-3" style="width: 290px" class="form-control search-select">
+																				<option>${fn:length(owner.range)} Range(s)</option>
+																				<c:forEach items="${owner.range}" var="range">
+																					<option value="${range.value}">[${range.value}]</option>
+																				</c:forEach>
+																			</select>
+																		</div>
+																	</div>																	
+																</c:if>
+																<c:set var="noRange" value="true"/>
 															</c:if>
 															<c:if test="${fn:length(owner.range) == 0}">
-																<a href="/index/getIPsRange?id=${owner.id}" type="button" id="requestRange_${owner.id}" class="btn btn-danger"> Request IPs range </a>
-															</c:if>
-															<c:if test="${owner.range[0] =='processing'}">
-																<a href="#" type="button" id="requestRange_${owner.id}" class="btn btn-danger">processing  </a>
+																<!-- a href="/index/getIPsRange?id=${owner.id}" type="button" id="requestRange_${owner.id}" class="btn btn-danger"> Request IPs range </a> -->
+																<label id="requestRange_${owner.id}" class="btn btn-danger"> Request IPs range </label>
 															</c:if>
 														</div>
 													</td>
@@ -229,7 +236,7 @@
 									</form>
 								</div>
 							</div>
-
+	
 						</div>
 						<!-- end: DYNAMIC TABLE PANEL -->
 
@@ -240,7 +247,7 @@
 				<!-- start: FOOTER -->
 				<footer class="inner">
 					<div class="footer-inner">
-						<div class="pull-left">2015 &copy; IT OPM - A&M.</div>
+						<div class="pull-left">2015 &copy; IT OPM - A & M.</div>
 						<div class="pull-right">
 							<span class="go-top"><i class="fa fa-chevron-up"></i></span>
 						</div>
@@ -264,14 +271,11 @@
 			<script src="assets/plugins/blockUI/jquery.blockUI.js"></script>
 			<script src="assets/plugins/iCheck/jquery.icheck.min.js"></script>
 			<script src="assets/plugins/moment/min/moment.min.js"></script>
-			<script
-				src="assets/plugins/perfect-scrollbar/src/jquery.mousewheel.js"></script>
-			<script
-				src="assets/plugins/perfect-scrollbar/src/perfect-scrollbar.js"></script>
+			<script src="assets/plugins/perfect-scrollbar/src/jquery.mousewheel.js"></script>
+			<script src="assets/plugins/perfect-scrollbar/src/perfect-scrollbar.js"></script>
 			<script src="assets/plugins/bootbox/bootbox.min.js"></script>
 			<script src="assets/plugins/jquery.scrollTo/jquery.scrollTo.min.js"></script>
-			<script
-				src="assets/plugins/ScrollToFixed/jquery-scrolltofixed-min.js"></script>
+			<script src="assets/plugins/ScrollToFixed/jquery-scrolltofixed-min.js"></script>
 			<script src="assets/plugins/jquery.appear/jquery.appear.js"></script>
 			<script src="assets/plugins/jquery-cookie/jquery.cookie.js"></script>
 			<script src="assets/plugins/velocity/jquery.velocity.min.js"></script>
@@ -335,16 +339,72 @@
 			<script src="assets/plugins/ckeditor/ckeditor.js"></script>
 			<script src="assets/plugins/ckeditor/adapters/jquery.js"></script>
 			<script src="assets/js/form-elements.js"></script>
+			<script src="assets/js/ui-notifications.js"></script>
+			<script src="assets/plugins/toastr/toastr.js"></script>
 			<!-- start: CORE JAVASCRIPTS  -->
 			<script src="assets/js/main.js"></script>
 			<!-- end: CORE JAVASCRIPTS  -->
+			
+			<!-- start: JAVASCRIPTS REQUIRED FOR SUBVIEW CONTENTS -->
+		
+		<script src="assets/plugins/owl-carousel/owl-carousel/owl.carousel.js"></script>
+		<script src="assets/plugins/jquery-mockjax/jquery.mockjax.js"></script>
+		<script src="assets/plugins/toastr/toastr.js"></script>
+		<script src="assets/plugins/bootstrap-modal/js/bootstrap-modal.js"></script>
+		<script src="assets/plugins/bootstrap-modal/js/bootstrap-modalmanager.js"></script>
+		<script src="assets/plugins/fullcalendar/fullcalendar/fullcalendar.min.js"></script>
+		<script src="assets/plugins/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+		<script src="assets/plugins/bootstrap-select/bootstrap-select.min.js"></script>
+		<script src="assets/plugins/jquery-validation/dist/jquery.validate.min.js"></script>
+		<script src="assets/plugins/bootstrap-fileupload/bootstrap-fileupload.min.js"></script>
+		<script src="assets/plugins/DataTables/media/js/jquery.dataTables.min.js"></script>
+		<script src="assets/plugins/DataTables/media/js/DT_bootstrap.js"></script>
+		<script src="assets/plugins/truncate/jquery.truncate.js"></script>
+		<script src="assets/plugins/summernote/dist/summernote.min.js"></script>
+		<script src="assets/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
+		<script src="assets/js/subview.js"></script>
+		<script src="assets/js/subview-examples.js"></script>
+		<!-- end: JAVASCRIPTS REQUIRED FOR SUBVIEW CONTENTS -->
 			<script>
 			jQuery(document).ready(function() {
 				Main.init();
 				FormElements.init();
 				TableData.init();
-				
+				//UINotifications.init();
+				//notification(${Notification});
+		       
+		        
 			});
+			
+			$("label[id^='requestRange_']").on("click", function () {
+					var buttonProcess = "<label id='"+$(this).attr( "id")+"' class='btn btn-blue'> Processing </label>";
+		        	var id = $(this).parent().attr( "id"); 
+					$(this).parent().html(buttonProcess);
+		        	getIPsRange(id);
+		    });
+			
+			function notification(message){
+			            var shortCutFunction = "info";
+			            toastr.options = {
+			                closeButton:true,
+			                debug: true,
+			                positionClass: 'toast-top-right',
+			                onclick: null
+			            };
+			            var $toast = toastr[shortCutFunction]("<br>", message);
+			}
+			
+			function getIPsRange(id){
+				 $.get(
+						 "/index/callipsrange?id="+id, 
+					   	 function(data, status){
+							 notification(data);				       		
+				       	 }
+				 
+				 );
+			}
+			
+			
 		</script>
 </body>
 <!-- end: BODY -->
