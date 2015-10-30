@@ -33,7 +33,7 @@ public class Server implements Serializable{
 	private String ip;
 	private String domain;
 	private String Registrar;
-	
+	private String Group;
 	@OneToMany( mappedBy = "Parent")
 	Set<IPAdress> Childs = new HashSet<IPAdress>(0);
 	
@@ -46,6 +46,7 @@ public class Server implements Serializable{
 		name 	=  args[0];
 		ip		=  args[1];
 		domain	=  args[2];
+		Group 	=  args[3];
 		Owner	= null;
 	}
 	
@@ -82,6 +83,14 @@ public class Server implements Serializable{
 
 	public void setRegistrar(String registrar) {
 		Registrar = registrar;
+	}
+
+	public String getGroup() {
+		return Group;
+	}
+
+	public void setGroup(String group) {
+		Group = group;
 	}
 
 	public Set<IPAdress> getChilds() {

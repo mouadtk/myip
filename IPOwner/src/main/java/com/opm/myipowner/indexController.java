@@ -35,7 +35,7 @@ import com.opm.myipowner.service.ServerService;
 import com.opm.myipowner.service.ServiceMYIPMS;
 
 @Controller
-@RequestMapping(value = {"", "/index", ""})
+@RequestMapping(value = {"/", "/index", ""})
 @PropertySource(value = { "classpath:application.properties" })
 public class indexController {
 
@@ -53,20 +53,18 @@ public class indexController {
 	private Environment environment;
 	
 	@RequestMapping(value = {"/","/index"}, method = RequestMethod.GET)
-	public ModelAndView index() {		
+	public ModelAndView index() {
 		
 		List<Owner> _Owners = ServiceMYIPMS.getAllOWners();
 		ModelAndView mv = new ModelAndView("index");
 		mv.addObject("_owners", _Owners);
-		mv.addObject("ErrorMessage","Failed to upload Servers File");
 		return mv;
-		
 	}
 	
 	@RequestMapping(value = "/formProcess", method = RequestMethod.POST)
 	public ModelAndView handleFileUpload(@RequestParam("file") MultipartFile file){
 			
-			ModelAndView mv = new ModelAndView("/index/index");
+			ModelAndView mv = new ModelAndView("/index");
 			List<Owner> _Owners = ServiceMYIPMS.getAllOWners();
 			mv.addObject("_owners", _Owners);
 			/**
@@ -95,11 +93,12 @@ public class indexController {
 			}catch(Exception e){
 				System.out.println(e.getMessage());
 			}
+			System.out.println("servers count "+MyServers.size());
 			/***
 			 * Get Users (myip.ms userAccounts)
 			 **/
 			List<UserMYIPMS> _users = ServiceMYIPMS.getAllActiveUsers();
-			System.out.println(_users.size());
+			//System.out.println(_users.size());
 			if(_users.isEmpty())
 				return mv.addObject("ErrorMessage","no user exist!");
 			/**
@@ -110,9 +109,14 @@ public class indexController {
 			process.setOwners(_owners);
 			process.setUser(_users.get(0));
 			/**
-			 * RETURN sERVERS IN PROCESS
+			 * RETURN Notification of SERVERS IN PROCESS
 			 **/
-			mv.addObject("_myservers", MyServers);
+			String messageNotif =  " Servers : ";
+			for (Map.Entry<String, Server> serv : MyServers.entrySet()) {
+				messageNotif += serv.getValue().getName()+", ";
+			}
+			messageNotif+="<br> Has been added successfully!";
+			mv.addObject("NewServerNotification", messageNotif);
 			return mv;
 			
 	}
